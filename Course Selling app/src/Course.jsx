@@ -2,6 +2,7 @@ import { Button, Card, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from 'axios';
+import Grid from '@mui/material/Grid';
 import { RecoilRoot,atom,selector,useRecoilState,useRecoilValue,useSetRecoilState,useRecoilValueLoadable,} from 'recoil';
 
 function Course (){    
@@ -28,10 +29,20 @@ function Course (){
             return<div>loading </div>
         }             
            
-        return<div style={{display:'flex'}}>
+        return<div style={{display: 'flex', flexWrap: 'wrap' }}>
+
+            <Grid container spacing={2}>
+                    <Grid item xs={6}>
+                    <UpdateCard course={course} setCourse={setCourse} />
+                    </Grid>
+                    <Grid item xs={6}>
+                    <Existingcard  courseId={courseId}/>
+                    </Grid>
+                   
+                </Grid>
             
-            <UpdateCard course={course} setCourse={setCourse} />
-            <Existingcard  courseId={courseId}/>
+            
+            
             
             
             
