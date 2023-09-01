@@ -7,15 +7,11 @@ import { useNavigate } from "react-router-dom";
 
 
 function AllCourses(){
-    
-
     const [courses ,setcourses] = useState([])
-       
     useEffect(()=>{
         fetch("http://localhost:3000/admin/courses", {
             method: "GET",                            
-            // body: JSON.stringify({
-                
+            // body: JSON.stringify({                
             // }),
             headers: {
                 "Content-type": "application/json",
@@ -29,26 +25,26 @@ function AllCourses(){
             .then((data) => {
                 // console.log('Inside res2');
                 setcourses(data.courses)
-            })               
+            })    
+        },[])
 
-    },[])
-        return <div >  
-            
-            <div >
-                <div  >                 
-                    <h1 style={{display: 'flex', justifyContent: 'center', padding: 10}}>Courses are as below</h1>
-                </div>
-                <div style={{display:'flex',justifyContent: "center", flexWrap: 'wrap'}}>                
-                                     
-                    {Object.keys(courses).map((key) => (
-                        <Courses key={key} course={courses[key]} />
-                    ))}
-                    
-                </div>        
+    return <div >  
+        
+        <div >
+            <div  >                 
+                <h1 style={{display: 'flex', justifyContent: 'center', padding: 10}}>Courses are as below</h1>
             </div>
+            <div style={{display:'flex',justifyContent: "center", flexWrap: 'wrap'}}>                
+                                
+                {Object.keys(courses).map((key) => (
+                    <Courses key={key} course={courses[key]} />
+                ))}
+                
+            </div>        
+        </div>
 
 
-    </div>
+</div>
 }
 function Courses(props){
     const navigate = useNavigate();

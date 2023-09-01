@@ -9,17 +9,18 @@ function Appbar(){
     const [useremail ,setUseremail] = useState();
     
     useEffect(()=>{
-       
-
-        fetch("http://localhost:3000/admin/me",{
+        console.log("Before fetch")
+         fetch("http://localhost:3000/admin/me",{
             method:"GET",
             headers :{
                 "Authorization": "Barer " + localStorage.getItem("tokan")
             } 
         }).then((res)=>{
+            console.log("in res fetch")
+            console.log(res)
             return res.json()
         }).then((data)=>{
-            console.log(data)
+            // console.log(data)
             setUseremail(data)
         })        
     
@@ -36,15 +37,14 @@ return <div style={{display:"flex",justifyContent: "space-between"}}>
             <Typography variant="h4">{useremail}</Typography>
             </div>
 
-
-            <Button 
+            {/* <Button 
             variant="contained"
             style={{margin:10, marginLeft:10}}
             onClick ={()=>
             {
                 navigate("/Course/:courseId")
             }}
-                 >Edit specific course</Button>
+                 >Edit specific course</Button> */}
             <Button 
             variant="contained"
             style={{margin:10, marginLeft:10}}
