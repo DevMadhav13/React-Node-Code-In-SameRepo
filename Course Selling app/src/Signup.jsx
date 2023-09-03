@@ -5,8 +5,6 @@ import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 
-
-
 function Signup(){
     const [email,setEmail] = useState();
     const [passowrd,setPassword] = useState();
@@ -37,12 +35,14 @@ function Signup(){
                                 username: email,
                                 passowrd: passowrd,
                             })                        
-                            const data = responce.data                                                      
-                            localStorage.setItem("tokan", data.tokan)
-                            console.log(data);
+                            const data = responce.data 
                             let jsondata = JSON.stringify(data.message)
-                            alert(jsondata)
+                            alert(jsondata)  
+                            console.log(data);
+                            if(data.tokan){
+                            localStorage.setItem("tokan", data.tokan)
                             navigate("/Signin");
+                            }                                                      
                         }}
                                 
                     

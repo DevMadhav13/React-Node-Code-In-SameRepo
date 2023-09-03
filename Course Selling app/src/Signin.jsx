@@ -30,20 +30,21 @@ function Signin(){
                 <Button variant="contained" 
                     onClick={async()=>{
                         console.log('Before fetch');                   
-                        const responce = await axios.post("http://localhost:3000/admin/login",{},
-                        {headers :{
-                                "username": email,
-                                "passowrd": passowrd
-                            }})
-                            const data = responce.data
+                            const responce = await axios.post("http://localhost:3000/admin/login",{},
+                            {headers :{
+                                    "username": email,
+                                    "passowrd": passowrd
+                            }}
+                            )
+                            const data = responce.data                    
+                            console.log(responce);
+                            let jsondata = JSON.stringify(data.message)
+                            alert(jsondata)
+                            if(data.tokan){
                                 localStorage.setItem("tokan", data.tokan)
-                                console.log(data);
-                                let jsondata = JSON.stringify(data.message)
-                                alert(jsondata)
-                                if (jsondata){
-                                    window.location.href= '/AllCourses'; 
-                                }
-                          
+                                window.location.href= '/AllCourses'
+                            }
+                        
                            
                 }}
                                         
