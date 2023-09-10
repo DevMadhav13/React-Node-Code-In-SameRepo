@@ -2,23 +2,50 @@ import express from 'express';
 import jwt from 'jsonwebtoken';
 import { Course, User } from "../Db/db_setup";
 const router= express.Router();
-
 import {authenticateJwtUser} from "../autentication/user_auth";
-
 const secrate2 ="N0rmAlS3crAt3"
+
+import { z } from 'zod'; 
+
+let USercredValidation = z.object({
+  username : z.string().min(1).max(30),
+  password : z.string().min(3).max(30)
+})
+
+let usernameValidation = z.string().min(1).max(30)  
+let PasswordValidation = z.string().min(1).max(30)  
+
+
+router.get('/me',authenticateJwtUser,async(req, res) => {
+  const ReqAdmin = req.headers["User_Username"]
+  const user = await User.findOne({username: ReqAdmin})
+  if (user){
+  res.status(200).json(ReqAdmin)
+  } else {
+  res.status(404).json({ message: "user not found" });
+}
+
+});
+
 // User routes 
 router.post('/signup', async(req, res) => {
-    console.log("inside Signup")
-    const user = req.body;
-    const username = user.username
-    // console.log(username)
-    const existingUser= await User.findOne({username});
-    // console.log(existingUser)
+  const newuser = USercredValidation.safeParse(req.body);
+  if (!newuser.success){
+    return res.status(411).json(newuser.error)
+  }
+  console.log("new user ");
+  console.log(newuser)
+  const username = newuser.data.username;
+  console.log("username of new user "+ username)
+  const existingUser = await User.findOne({username})
+  console.log("esisting user "+ existingUser)
+  console.log("from /signup route after admin.find")
     if (existingUser){
       res.status(300).json({message:" user alrady exist"})
     }else{
-      const NewUser = new User(user);
+      const NewUser = new User(newuser.data);
       NewUser.save()
+      console.log(NewUser)
       const tokan = jwt.sign({username, role: "user"},secrate2,{expiresIn: '1h'})
       res.status(200).json({message:" user Created succesfullly",tokan: tokan})
     }
@@ -26,14 +53,30 @@ router.post('/signup', async(req, res) => {
   });
   
   router.post('/login', async(req, res) => {
-    const {username ,passowrd} = req.headers;
-    const existingUser = await User.findOne({username,passowrd});
+    const usernamev =usernameValidation.safeParse(req.headers.username);
+    const passwordv =PasswordValidation.safeParse(req.headers.password);
+    console.log(usernamev)
+    console.log(passwordv)
+    if (!usernamev.success && !passwordv.success){
+      return res.status(411).json(usernamev.error|| passwordv.error)
+    }
+    if (usernamev.success&& passwordv.success){
+      const username = usernamev.data;
+      const password = passwordv.data
+      var usercred = {username , password}
+      console.log("users creda sre")
+      console.log(usercred)
+      const existingUser = await User.findOne(usercred);
+      console.log(existingUser)
+    
     if(existingUser){
+      const username = existingUser.username
+      console.log(username)
       const tokan = jwt.sign({username, role:"user"},secrate2,{expiresIn: '1h'})
       res.status(200).json({message:" user logedin succesfullly",tokan: tokan})
     }else{
       res.status(300).json({message:" user Doesnot exist"})
-    }
+    }}
     // logic to log in user
   });
   
@@ -50,9 +93,10 @@ router.post('/signup', async(req, res) => {
   
   router.post('/courses/:courseId',authenticateJwtUser, async (req, res) => {
     const courseId = req.params.courseId;
-    const ReqUser = req.headers["user"]
-    // console.log(courseId)
-    const course = await Course.findById({courseId});
+    const ReqUser = req.headers["User_Username"]
+    console.log("courseId is ")
+    console.log(courseId)
+    const course = await Course.findById(courseId);
     if (course){
       const username = ReqUser;
       const user = await User.findOne({username});
@@ -71,9 +115,9 @@ router.post('/signup', async(req, res) => {
   
   router.get('/purchasedCourses', authenticateJwtUser, async(req, res) => {
     console.log("inside get")
-    const ReqAdmin = req.jwtPayload
-    if(ReqAdmin ){
-      const user = await User.findOne({username: ReqAdmin.username}).populate('purchasedCourses');
+    const Requser = req.headers["User_Username"]
+    if(Requser ){
+      const user = await User.findOne({username:Requser}).populate('purchasedCourses');
     // console.log({User: user})
     if (user){
       res.json({message: " purcaes courses are ", purchasedCourses: user.purchasedCourses });

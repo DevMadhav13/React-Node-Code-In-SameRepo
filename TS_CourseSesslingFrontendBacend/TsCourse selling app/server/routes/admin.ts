@@ -7,7 +7,7 @@ const secrate1 ="SperS3cRat3"
 
 import { z } from 'zod'; 
 
-let inputProps = z.object({
+let AdmincredValidation = z.object({
   username : z.string().min(1).max(30),
   password : z.string().min(3).max(30)
 })
@@ -35,7 +35,7 @@ router.get('/me',authenticateJwtAdmin,async(req, res) => {
 });
 
 router.post('/signup', async (req, res) => {
-    const newadmin = inputProps.safeParse(req.body);
+    const newadmin = AdmincredValidation.safeParse(req.body);
     if (!newadmin.success){
       return res.status(411).json(newadmin.error)
     }
