@@ -4,17 +4,7 @@ import { Course, User } from "../Db/db_setup";
 const router= express.Router();
 import {authenticateJwtUser} from "../autentication/user_auth";
 const secrate2 ="N0rmAlS3crAt3"
-
-import { z } from 'zod'; 
-
-let USercredValidation = z.object({
-  username : z.string().min(1).max(30),
-  password : z.string().min(3).max(30)
-})
-
-let usernameValidation = z.string().min(1).max(30)  
-let PasswordValidation = z.string().min(1).max(30)  
-
+import { USercredValidation, usernameValidation,PasswordValidation } from '../../zod/index'; 
 
 router.get('/me',authenticateJwtUser,async(req, res) => {
   const ReqAdmin = req.headers["User_Username"]
@@ -123,9 +113,7 @@ router.post('/signup', async(req, res) => {
       res.json({message: " purcaes courses are ", purchasedCourses: user.purchasedCourses });
     }else{
       res.json({message: " User not found "});
-    }
-  
-    
+    }    
     }
     
     // logic to view purchased courses

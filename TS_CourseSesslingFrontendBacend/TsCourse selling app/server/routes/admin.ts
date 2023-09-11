@@ -4,23 +4,7 @@ import { Course, Admin } from "../Db/db_setup";
 const router= express.Router();
 import { authenticateJwtAdmin } from "../autentication/admin_auth";
 const secrate1 ="SperS3cRat3"
-
-import { z } from 'zod'; 
-
-let AdmincredValidation = z.object({
-  username : z.string().min(1).max(30),
-  password : z.string().min(3).max(30)
-})
-
-let usernameValidation = z.string().min(1).max(30)  
-let PasswordValidation = z.string().min(1).max(30)  
-
-let CourseValidation = z.object({
-  title: z.string().min(1).max(30),
-  description: z.string().min(1).max(300),
-  imageLink : z.string().min(1),
-  price : z.number().min(1)
-})
+import { AdmincredValidation, usernameValidation,PasswordValidation,CourseValidation } from '../../zod/index'; 
 
 // Admin routes
 router.get('/me',authenticateJwtAdmin,async(req, res) => {
